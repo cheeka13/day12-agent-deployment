@@ -36,6 +36,7 @@ COPY --from=builder /root/.local /home/appuser/.local
 
 # Copy application code
 COPY app/ ./app/
+COPY utils/ ./utils/
 
 # Set ownership
 RUN chown -R appuser:appuser /app
