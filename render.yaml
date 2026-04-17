@@ -12,8 +12,8 @@ services:
     region: singapore
     plan: free
     
-    dockerfilePath: ./Dockerfile
-    dockerContext: .
+    dockerfilePath: ./my-production-agent/Dockerfile
+    dockerContext: ./my-production-agent
     
     healthCheckPath: /health
     
