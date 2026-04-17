@@ -1,0 +1,55 @@
+# ============================================================
+# Render Blueprint - Production AI Agent
+# ============================================================
+
+services:
+  # ──────────────────────────────────────
+  # Web Service - AI Agent
+  # ──────────────────────────────────────
+  - type: web
+    name: production-ai-agent
+    runtime: docker
+    region: singapore
+    plan: free
+    
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    
+    healthCheckPath: /health
+    
+    autoDeploy: true
+    
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: LOG_LEVEL
+        value: INFO
+      - key: RATE_LIMIT_PER_MINUTE
+        value: 10
+      - key: MONTHLY_BUDGET_USD
+        value: 10.0
+      - key: LLM_MODEL
+        value: gpt-3.5-turbo
+      # Redis URL - auto-populated from Redis service
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: agent-redis
+          property: connectionString
+      # API Key - Render will generate a secure random value
+      - key: AGENT_API_KEY
+        generateValue: true
+      # OpenAI Key - set manually in Render dashboard (optional)
+      - key: OPENAI_API_KEY
+        sync: false
+
+  # ──────────────────────────────────────
+  # Redis Service
+  # ──────────────────────────────────────
+  - type: redis
+    name: agent-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
